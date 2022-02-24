@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
+//
 type Student struct {
 	ID    uint `gorm:"primary_key"`
 	Name  string
@@ -15,24 +17,40 @@ type Student struct {
 
 var Db *gorm.DB
 
-func init() {
+// 设计模式-单例模式 https://www.runoob.com/design-pattern/singleton-pattern.html
+/*
+type singleton struct {}
+
+var ins *singleton = &singleton{}
+
+func GetInsOr() *singleton{
+    return ins
+}
+*/
+func Init() {
 	db, err := gorm.Open("mysql", "root:yxqc20161012@/RUNOOB?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic("连接数据库失败")
 	}
 	Db = db
 }
+
+// InsertStudentInformation inserts student info .
 func InsertStudentInformation() {
 	var name string
 	var sex uint
 	var grade int
 	fmt.Println("请输入要插入学生的信息：名字，性别，成绩")
 	fmt.Scan(&name, &sex, &grade)
-	Db.Create(&Student{
+	err := Db.Create(&Student{
 		Name:  name,
 		Sex:   sex,
 		Grade: grade,
-	})
+	}).Err()
+	if err != nil {
+		fmt.Println("insert failed: %s", err.Error())
+		return
+	}
 	fmt.Println("插入成功:")
 }
 func UpdateStudentInformation() {
@@ -42,12 +60,7 @@ func UpdateStudentInformation() {
 	fmt.Println("请输入要修改学生的信息：学号，修改后的名字,性别，成绩")
 	fmt.Scan(&id, &name, &sex, &grade)
 	var student Student
-	Db.First(&student, id)
-	if student.ID == 0 {
-		fmt.Println("查无此人，修改失败")
-		return
-	}
-	Db.Model(&student).Updates(Student{Name: name, Sex: sex, Grade: grade})
+	Db.Model(&student).Updates(Student{Name: name, Sex: sex, Grade: grade}) //err handle
 	fmt.Println("更新完毕")
 }
 func DeleteStudentInformation() {
@@ -55,12 +68,12 @@ func DeleteStudentInformation() {
 	fmt.Println("请输入要删除学生的学号")
 	fmt.Scan(&id)
 	var student Student
-	Db.First(&student, id)
-	if student.ID == 0 {
-		fmt.Println("查无此人，删除失败")
-		return
-	}
-	Db.Delete(&student)
+	// Db.First(&student, id)
+	// if student.ID == 0 {
+	// 	fmt.Println("查无此人，删除失败")
+	// 	return
+	// }
+	Db.Delete(&student) // err handle
 	fmt.Println("删除成功")
 }
 func SelectStudentInformation() {
@@ -81,15 +94,21 @@ func SelectStudentInformation() {
 		fmt.Println("请重新输入")
 	}
 }
+
+// err handle
 func SelectByID() {
 	var id uint
 	fmt.Println("请输入学生学号：")
 	fmt.Scan(&id)
 	var student Student
-	Db.First(&student, id)
-	if student.ID == 0 {
-		fmt.Println("查无此人")
-		return
+	err := Db.First(&student, id)
+	// record not found
+	if err != nil {
+		if err != gorm.ErrRecordNotFound {
+			fmt.Println("xxx", err)
+			return
+		}
+		err = nil
 	}
 	fmt.Println(student)
 }
@@ -118,6 +137,7 @@ func SelectByGrade() {
 	fmt.Println(student)
 }
 func main() {
+	Init()
 	Db.AutoMigrate(&Student{})
 loop:
 	for true {
