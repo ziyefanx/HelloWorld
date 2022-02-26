@@ -3,34 +3,35 @@ package student
 import (
 	"awesomeProject1/dal/db"
 	"awesomeProject1/model"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
+// happy path 不缩进
+
 func QueryStudentInfo(c *gin.Context) {
-	var login *GetStudentReq
+	var req *GetStudentReq
 	var stu *model.Student
-	if err := c.ShouldBindUri(&login); err != nil {
+	var err error
+	if err := c.ShouldBindUri(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "400", "error": err.Error()})
 		return
 	}
-	if login.Opt == "SelectById" {
-		stu, err := db.SelectByID(login.ID)
+	// 如果传入ID，就只用ID查询
+	if req.ID != 0 {
+		stu, err = db.SelectStudentByID(req.ID)
 		if err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
 		}
-		c.JSON(http.StatusOK, gin.H{"status": "200", "massage": stu})
+	} else {
+		stu, err = db.SelectStudentByNameAndSex(req.Name, int(req.Sex))
+		if err != nil {
+			fmt.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+		}
 	}
-	if login.Opt == "SelectByName" {
-		SelectByName(login.Name)
-		c.JSON(http.StatusOK, gin.H{"status": "200", "massage": stu})
-	}
-	if login.Opt == "SelectBySex" {
-		SelectBySex(login.Sex)
-		c.JSON(http.StatusOK, gin.H{"status": "200", "massage": stu})
-	}
-	if login.Opt == "SelectByGrade" {
-		SelectByGrade(login.Grade)
-		c.JSON(http.StatusOK, gin.H{"status": "200", "massage": stu})
-	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "200", "massage": stu})
 }

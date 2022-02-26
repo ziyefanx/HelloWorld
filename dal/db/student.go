@@ -34,6 +34,16 @@ func SelectStudentByID(id int) (*model.Student, error) {
 	}
 	return student, nil
 }
+
+func SelectStudentByNameAndSex(name string, sex int) (*model.Student, error) {
+	var student *model.Student
+	err := Db.First(&student /* select by name sex */).Error
+	if err != nil {
+		return nil, err
+	}
+	return student, nil
+}
+
 func SelectStudentByName(name string) {
 	var student Student
 	Db.Where("name=?", name).First(&student)
