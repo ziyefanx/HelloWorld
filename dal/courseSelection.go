@@ -26,3 +26,11 @@ func CancelCourseSelectionInfomation(classID int) (*model.StudentCourseRelation,
 	}
 	return &req, err
 }
+func GetCourseSelectionNum(classID int) (int, error) {
+	var count int
+	err := Db.Model(&model.StudentCourseRelation{}).Where("class_id = ?", classID).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, err
+}

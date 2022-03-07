@@ -2,13 +2,12 @@ package course
 
 import (
 	db "awesomeProject1/dal"
-	"awesomeProject1/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func DeleteCourseInfo(c *gin.Context) {
-	var req *model.Course
+	var req DeleteCourseReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

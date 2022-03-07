@@ -8,7 +8,7 @@ import (
 )
 
 func CreateStudentInfo(c *gin.Context) {
-	var req *model.Student
+	var req *UpdateStudentInfoReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

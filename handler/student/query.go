@@ -11,10 +11,10 @@ import (
 // happy path 不缩进
 
 func QueryStudentInfo(c *gin.Context) {
-	var req model.Student
+	var req GetStudentReq
 	var stu *model.Student
 	var err error
-	if err = c.ShouldBindUri(&req); err != nil {
+	if err = c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "400", "error": err.Error()})
 		return
 	}
@@ -23,28 +23,28 @@ func QueryStudentInfo(c *gin.Context) {
 		stu, err = db.SelectStudentByID(req.ID)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
 			return
 		}
 	} else if req.ID == 0 && req.Name != "" {
 		stu, err = db.SelectStudentByName(req.Name)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
 			return
 		}
 	} else if req.ID == 0 && req.Name == "" && req.Sex != 0 {
 		stu, err = db.SelectBySex(req.Sex)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
 			return
 		}
 	} else {
 		stu, err = db.SelectByGrade(req.Grade)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
 			return
 		}
 	}

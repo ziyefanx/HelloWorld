@@ -11,10 +11,10 @@ import (
 // happy path 不缩进
 
 func QueryCourseInfo(c *gin.Context) {
-	var req model.Course
+	var req GetCourseReq
 	var cou *model.Course
 	var err error
-	if err = c.ShouldBindUri(&req); err != nil {
+	if err = c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "400", "error": err.Error()})
 		return
 	}

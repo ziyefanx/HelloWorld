@@ -2,14 +2,13 @@ package courseSelection
 
 import (
 	db "awesomeProject1/dal"
-	"awesomeProject1/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func GetCourseSelectionInfo(c *gin.Context) {
-	var req *model.StudentCourseRelation
-	if err := c.ShouldBindUri(&req); err != nil {
+	var req GetSelectionReq
+	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

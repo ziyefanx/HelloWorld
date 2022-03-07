@@ -40,7 +40,7 @@ func SelectCourseByID(id uint) (*model.Course, error) {
 
 func SelectCourseByName(name string) (*model.Course, error) {
 	var course model.Course
-	err := Db.Where("course_name=?", name).First(&course).Error
+	err := Db.Where("course_name LIKE ?", name).First(&course).Error
 	if err != nil {
 		return nil, err
 	}
@@ -53,4 +53,12 @@ func SelectByCredit(courseCredit int) (*model.Course, error) {
 		return nil, err
 	}
 	return &course, err
+}
+func GetCourseLimit(id int) (int, error) {
+	var course model.Course
+	err := Db.First(&course, id).Error
+	if err != nil {
+		return 0, err
+	}
+	return course.CourseNumberLimit, err
 }

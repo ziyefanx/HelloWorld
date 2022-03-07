@@ -39,7 +39,7 @@ func SelectStudentByID(id uint) (*model.Student, error) {
 
 func SelectStudentByName(name string) (*model.Student, error) {
 	var student model.Student
-	err := Db.Where("name=?", name).First(&student).Error
+	err := Db.Where("name LIKE ?", name).First(&student).Error
 	if err != nil {
 		return nil, err
 	}
