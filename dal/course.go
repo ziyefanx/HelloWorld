@@ -30,29 +30,29 @@ func DeleteCourseInformation(id uint) (*model.Course, error) {
 }
 
 func SelectCourseByID(id uint) (*model.Course, error) {
-	var course model.Course
+	var course = &model.Course{}
 	err := Db.Where("course=?", id).First(&course).Error
 	if err != nil {
 		return nil, err
 	}
-	return &course, err
+	return course, err
 }
 
 func SelectCourseByName(name string) (*model.Course, error) {
-	var course model.Course
+	var course = &model.Course{}
 	err := Db.Where("course_name LIKE ?", name).First(&course).Error
 	if err != nil {
 		return nil, err
 	}
-	return &course, err
+	return course, err
 }
 func SelectByCredit(courseCredit int) (*model.Course, error) {
-	var course model.Course
+	var course = &model.Course{}
 	err := Db.Where("course_credit=?", courseCredit).First(&course).Error
 	if err != nil {
 		return nil, err
 	}
-	return &course, err
+	return course, err
 }
 func GetCourseLimit(id int) (int, error) {
 	var course model.Course

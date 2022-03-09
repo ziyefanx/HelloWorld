@@ -20,7 +20,7 @@ func UpdateCourseInfo(c *gin.Context) {
 		CourseNumberLimit: req.CourseNumberLimit,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err, "data": cou})
+		c.JSON(http.StatusInternalServerError, db.Reply("500", err, cou))
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "200", "massage": "Update success", "data": cou})
+	c.JSON(http.StatusOK, db.Reply("200", "Update success", cou))
 }

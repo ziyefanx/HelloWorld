@@ -6,7 +6,7 @@ type GetSelectionReq struct {
 }
 type DeleteSelectionReq struct {
 	StudentID int `form:"studentID" json:"studentID" uri:"studentID" binding:"required"`
-	ClassID   int `form:"classID" json:"classID" uri:"classID"`
+	ClassID   int `form:"classID" json:"classID" uri:"classID" binding:"required"`
 }
 type CreateSelectionReq struct {
 	StudentID int `form:"studentID" json:"studentID" uri:"studentID" binding:"required"`

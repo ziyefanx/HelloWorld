@@ -15,30 +15,30 @@ func QueryCourseInfo(c *gin.Context) {
 	var cou *model.Course
 	var err error
 	if err = c.ShouldBindQuery(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "400", "error": err.Error()})
+		c.JSON(http.StatusBadRequest, db.StatusReply("400", err.Error()))
 		return
 	}
 	if req.CourseID != 0 {
 		cou, err = db.SelectCourseByID(uint(req.CourseID))
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 			return
 		}
 	} else if req.CourseID == 0 && req.CourseName != "" {
 		cou, err = db.SelectCourseByName(req.CourseName)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 			return
 		}
 	} else {
 		cou, err = db.SelectByCredit(req.CourseCredit)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "200", "massage": cou})
+	c.JSON(http.StatusOK, db.StatusReply("200", cou))
 }

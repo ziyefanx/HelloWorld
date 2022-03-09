@@ -15,22 +15,22 @@ func InsertCourseSelectionInfo(c *gin.Context) {
 	}
 	num, Err := db.GetCourseSelectionNum(req.ClassID)
 	if Err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": Err})
+		c.JSON(http.StatusInternalServerError, db.StatusReply("500", Err))
 	}
 	limit, ERR := db.GetCourseLimit(req.ClassID)
 	if ERR != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": ERR})
+		c.JSON(http.StatusInternalServerError, db.StatusReply("500", ERR))
 	}
-	if num < limit {
-		selection, err := db.InsertCourseSelectionInformation(&model.StudentCourseRelation{
-			StudentID: req.StudentID,
-			ClassID:   req.ClassID,
-		})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err, "data": selection})
-		}
-		c.JSON(http.StatusOK, gin.H{"status": "200", "massage": "create success", "data": selection})
+	if num >= limit {
+		c.JSON(http.StatusInternalServerError, db.StatusReply("500", "Full of people"))
 		return
 	}
-	c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": "full number of people"})
+	selection, err := db.InsertCourseSelectionInformation(&model.StudentCourseRelation{
+		StudentID: req.StudentID,
+		ClassID:   req.ClassID,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, db.Reply("500", err, selection))
+	}
+	c.JSON(http.StatusOK, db.Reply("200", "Create success", selection))
 }

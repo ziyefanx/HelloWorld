@@ -9,22 +9,26 @@ func InsertCourseSelectionInformation(selection *model.StudentCourseRelation) (*
 	}
 	return selection, err
 }
-func GetCourseSelectionInformation(selections int) (*model.StudentCourseRelation, error) {
-	var req model.StudentCourseRelation
+func GetCourseSelectionInformation(selections int) (*model.Course, error) {
+	var req = &model.StudentCourseRelation{}
 	err := Db.Where("student_id=?", selections).Find(&req).Error
 	if err != nil {
 		return nil, err
 	}
-	return &req, err
+	var Req = &model.Course{}
+	Err := Db.Where("course_id=?", req.ClassID).Find(&Req).Error
+	if Err != nil {
+
+	}
+	return Req, err
 }
-func CancelCourseSelectionInfomation(classID int) (*model.StudentCourseRelation, error) {
-	var req model.StudentCourseRelation
-	Db.Where("class_id=?", classID).First(&req)
-	err := Db.Delete(&req).Error
+func CancelCourseSelectionInformation(studentID int, classID int) (*model.StudentCourseRelation, error) {
+	var req *model.StudentCourseRelation = &model.StudentCourseRelation{}
+	err := Db.Where("student_id=? AND class_id=?", studentID, classID).Delete(req).Error
 	if err != nil {
 		return nil, err
 	}
-	return &req, err
+	return req, err
 }
 func GetCourseSelectionNum(classID int) (int, error) {
 	var count int

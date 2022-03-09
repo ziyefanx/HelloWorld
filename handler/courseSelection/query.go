@@ -14,8 +14,8 @@ func GetCourseSelectionInfo(c *gin.Context) {
 	}
 	result, err := db.GetCourseSelectionInformation(req.StudentID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err.Error()})
+		c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "200", "massage": "create success", "data": result})
+	c.JSON(http.StatusOK, db.Reply("200", "query success", result))
 }

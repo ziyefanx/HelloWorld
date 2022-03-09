@@ -14,7 +14,7 @@ func DeleteStudentInfo(c *gin.Context) {
 	}
 	stu, err := db.DeleteStudentInformation(req.ID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err, "data": stu})
+		c.JSON(http.StatusInternalServerError, db.Reply("500", err, stu))
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "200", "massage": "Delete success", "data": stu})
+	c.JSON(http.StatusOK, db.Reply("200", "Delete success", stu))
 }

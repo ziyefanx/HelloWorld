@@ -23,30 +23,30 @@ func QueryStudentInfo(c *gin.Context) {
 		stu, err = db.SelectStudentByID(req.ID)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
+			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 			return
 		}
 	} else if req.ID == 0 && req.Name != "" {
 		stu, err = db.SelectStudentByName(req.Name)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
+			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 			return
 		}
 	} else if req.ID == 0 && req.Name == "" && req.Sex != 0 {
 		stu, err = db.SelectBySex(req.Sex)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
+			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 			return
 		}
 	} else {
 		stu, err = db.SelectByGrade(req.Grade)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err.Error()})
+			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "200", "message": stu})
+	c.JSON(http.StatusOK, db.StatusReply("200", stu))
 }

@@ -12,9 +12,9 @@ func CancelCourseSelection(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	request, err := db.CancelCourseSelectionInfomation(req.ClassID)
+	request, err := db.CancelCourseSelectionInformation(req.StudentID, req.ClassID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "message": err, "data": req})
+		c.JSON(http.StatusInternalServerError, db.Reply("500", err, req))
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "200", "massage": "Delete success", "data": request})
+	c.JSON(http.StatusOK, db.Reply("200", "Delete success", request))
 }

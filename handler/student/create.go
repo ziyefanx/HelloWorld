@@ -20,7 +20,7 @@ func CreateStudentInfo(c *gin.Context) {
 		Grade: req.Grade,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "500", "massage": err, "data": stu})
+		c.JSON(http.StatusInternalServerError, db.Reply("500", err, stu))
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "200", "massage": "create success", "data": stu})
+	c.JSON(http.StatusOK, db.Reply("200", "Create success", stu))
 }
