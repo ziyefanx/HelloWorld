@@ -5,4 +5,5 @@ type Course struct {
 	CourseName        string
 	CourseCredit      int
 	CourseNumberLimit int
+	CourseType        string
 }

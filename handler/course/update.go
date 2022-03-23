@@ -2,6 +2,7 @@ package course
 
 import (
 	db "awesomeProject1/dal"
+	"awesomeProject1/handler/reply"
 	"awesomeProject1/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -18,9 +19,10 @@ func UpdateCourseInfo(c *gin.Context) {
 		CourseName:        req.CourseName,
 		CourseCredit:      req.CourseCredit,
 		CourseNumberLimit: req.CourseNumberLimit,
+		CourseType:        req.CourseType,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, db.Reply("500", err, cou))
+		reply.Reply(c, http.StatusInternalServerError, err, cou)
 	}
-	c.JSON(http.StatusOK, db.Reply("200", "Update success", cou))
+	reply.Reply(c, http.StatusOK, "Update success", cou)
 }

@@ -9,16 +9,20 @@ func InsertCourseSelectionInformation(selection *model.StudentCourseRelation) (*
 	}
 	return selection, err
 }
-func GetCourseSelectionInformation(selections int) (*model.Course, error) {
-	var req = &model.StudentCourseRelation{}
-	err := Db.Where("student_id=?", selections).Find(&req).Error
+func GetCourseSelectionInformation(selections int) ([]model.Course, error) {
+	relations := make([]model.StudentCourseRelation, 0)
+	err := Db.Where("student_id=?", selections).Find(&relations).Error
 	if err != nil {
 		return nil, err
 	}
-	var Req = &model.Course{}
-	Err := Db.Where("course_id=?", req.ClassID).Find(&Req).Error
-	if Err != nil {
+	Req := make([]model.Course, 0)
+	for _, relation := range relations {
+		req := model.Course{}
+		Err := Db.Where("course_id=?", relation.ClassID).Find(&req).Error
+		Req = append(Req, req)
+		if Err != nil {
 
+		}
 	}
 	return Req, err
 }

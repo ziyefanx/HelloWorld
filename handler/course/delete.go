@@ -2,6 +2,7 @@ package course
 
 import (
 	db "awesomeProject1/dal"
+	"awesomeProject1/handler/reply"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -9,12 +10,12 @@ import (
 func DeleteCourseInfo(c *gin.Context) {
 	var req DeleteCourseReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		reply.Reply(c, http.StatusBadRequest, "error", err.Error())
 		return
 	}
 	cou, err := db.DeleteCourseInformation(uint(req.CourseID))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, db.Reply("500", err, cou))
+		reply.Reply(c, http.StatusInternalServerError, err, cou)
 	}
-	c.JSON(http.StatusOK, db.Reply("200", "delete success", cou))
+	reply.Reply(c, http.StatusOK, "delete success", cou)
 }

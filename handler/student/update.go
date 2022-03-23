@@ -2,6 +2,7 @@ package student
 
 import (
 	db "awesomeProject1/dal"
+	"awesomeProject1/handler/reply"
 	"awesomeProject1/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,17 +11,18 @@ import (
 func UpdateStudentInfo(c *gin.Context) {
 	var req *UpdateStudentInfoReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		reply.Reply(c, http.StatusBadRequest, "error", err.Error())
 		return
 	}
 	stu, err := db.UpdateStudentInformation(&model.Student{
-		ID:    uint(req.ID),
-		Sex:   req.Sex,
-		Name:  req.Name,
-		Grade: req.Grade,
+		ID:          uint(req.ID),
+		Sex:         req.Sex,
+		Name:        req.Name,
+		Grade:       req.Grade,
+		StudentType: req.StudentType,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, db.Reply("500", err, stu))
+		reply.Reply(c, http.StatusInternalServerError, err, stu)
 	}
-	c.JSON(http.StatusOK, db.Reply("200", "Update success", stu))
+	reply.Reply(c, http.StatusOK, "Update success", stu)
 }

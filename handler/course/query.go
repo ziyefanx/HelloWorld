@@ -2,6 +2,7 @@ package course
 
 import (
 	db "awesomeProject1/dal"
+	"awesomeProject1/handler/reply"
 	"awesomeProject1/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -12,33 +13,34 @@ import (
 
 func QueryCourseInfo(c *gin.Context) {
 	var req GetCourseReq
-	var cou *model.Course
+	//var cou *model.Course
+	courses := make([]model.Course, 0)
 	var err error
 	if err = c.ShouldBindQuery(&req); err != nil {
-		c.JSON(http.StatusBadRequest, db.StatusReply("400", err.Error()))
+		reply.Reply(c, http.StatusBadRequest, "500", err.Error())
 		return
 	}
-	if req.CourseID != 0 {
-		cou, err = db.SelectCourseByID(uint(req.CourseID))
+	if req.CourseName != "" {
+		courses, err = db.SelectCourseByName(req.CourseName, req.Page, req.Size)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
+			reply.Reply(c, http.StatusInternalServerError, "500", err.Error())
 			return
 		}
-	} else if req.CourseID == 0 && req.CourseName != "" {
-		cou, err = db.SelectCourseByName(req.CourseName)
+	} else if req.CourseName == "" && req.CourseCredit != 0 {
+		courses, err = db.SelectByCredit(req.CourseCredit, req.Page, req.Size)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
+			reply.Reply(c, http.StatusInternalServerError, "500", err.Error())
 			return
 		}
 	} else {
-		cou, err = db.SelectByCredit(req.CourseCredit)
+		courses, err = db.SelectCourseByLimit(uint(req.CourseNumberLimit), req.Page, req.Size)
 		if err != nil {
 			fmt.Println(err)
-			c.JSON(http.StatusInternalServerError, db.StatusReply("500", err.Error()))
+			reply.Reply(c, http.StatusInternalServerError, "500", err.Error())
 			return
 		}
 	}
-	c.JSON(http.StatusOK, db.StatusReply("200", cou))
+	reply.Reply(c, http.StatusOK, "200", courses)
 }

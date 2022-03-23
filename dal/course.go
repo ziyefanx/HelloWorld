@@ -29,30 +29,40 @@ func DeleteCourseInformation(id uint) (*model.Course, error) {
 	return course, err
 }
 
-func SelectCourseByID(id uint) (*model.Course, error) {
-	var course = &model.Course{}
-	err := Db.Where("course=?", id).First(&course).Error
+func SelectCourseByLimit(limit uint, page int, size int) ([]model.Course, error) {
+	courses := make([]model.Course, 0)
+	pageindex := page
+	pagesize := size
+	err := Db.Offset((pageindex-1)*pagesize).Limit(pagesize).Where("course_number_limit=?", limit).Find(&courses).Error
+	//err := Db.Where("course_number_limit=?", limit).Find(&course).Error
 	if err != nil {
 		return nil, err
 	}
-	return course, err
+	return courses, err
 }
 
-func SelectCourseByName(name string) (*model.Course, error) {
-	var course = &model.Course{}
-	err := Db.Where("course_name LIKE ?", name).First(&course).Error
+func SelectCourseByName(name string, page int, size int) ([]model.Course, error) {
+	courses := make([]model.Course, 0)
+	pageindex := page
+	pagesize := size
+	Name := "%" + name + "%"
+	err := Db.Offset((pageindex-1)*pagesize).Limit(pagesize).Find(&courses, "course_name LIKE ?", Name).Error
+	//err := Db.Where("course_name LIKE ?", name).Find(&course).Error
 	if err != nil {
 		return nil, err
 	}
-	return course, err
+	return courses, err
 }
-func SelectByCredit(courseCredit int) (*model.Course, error) {
-	var course = &model.Course{}
-	err := Db.Where("course_credit=?", courseCredit).First(&course).Error
+func SelectByCredit(courseCredit int, page int, size int) ([]model.Course, error) {
+	courses := make([]model.Course, 0)
+	pageindex := page
+	pagesize := size
+	err := Db.Offset((pageindex-1)*pagesize).Limit(pagesize).Find(&courses, "course_credit=?", courseCredit).Error
+	//err := Db.Where("course_credit=?", courseCredit).Find(&course).Error
 	if err != nil {
 		return nil, err
 	}
-	return course, err
+	return courses, err
 }
 func GetCourseLimit(id int) (int, error) {
 	var course model.Course

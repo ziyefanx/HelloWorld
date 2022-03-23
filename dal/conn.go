@@ -14,4 +14,5 @@ func Init() {
 		panic("连接数据库失败")
 	}
 	Db = db
+
 }
