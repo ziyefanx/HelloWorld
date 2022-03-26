@@ -2,9 +2,9 @@ package main
 
 import (
 	Db "awesomeProject1/dal"
-	"awesomeProject1/handler/Graduate"
 	"awesomeProject1/handler/Selection"
 	"awesomeProject1/handler/course"
+	"awesomeProject1/handler/graduate"
 	"awesomeProject1/handler/student"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -30,7 +30,7 @@ func main() {
 	r.GET("/selection", Selection.GetCourseSelectionInfo)
 	r.DELETE("/selection", Selection.CancelCourseSelection)
 
-	r.GET("/graduate", Graduate.Graduate)
+	r.GET("/graduate/satisfy", graduate.Graduate)
 	err := r.Run(":8000")
 	if err != nil {
 		fmt.Println(err)
